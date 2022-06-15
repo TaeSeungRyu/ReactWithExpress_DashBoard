@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+    <title>index</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<style>
+    .ccc {
+        border: 1px solid gray;
+        width: 8.2%;
+        height: 220px;
+        display: inline-block;
+    }
+</style>
+
+<body style='height: 100%;width: 100%;text-align: center;padding-top: 2%;' id='hello'>
+
+    <form action="data/insert" method="post" enctype="multipart/form-data">
+        <input type="hidden" value='name' name='name' />
+        <input type="hidden" value='desc' name='desc' />
+        <input type="file" name="files[0]" />
+        <input type="file" name="files[1]" />
+        <input type='submit' value='전송테스터기' />
+    </form>
+</body>
+
+</html>
+
+<script>
+    $.ajax({
+        url: 'data/getList',
+        data: { },
+        type: 'post',
+        success: function (resp) {
+
+            console.log(resp.result);
+            console.log(JSON.parse(resp.result));
+        }
+    });
+</script>
