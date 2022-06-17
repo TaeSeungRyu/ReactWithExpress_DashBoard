@@ -52,7 +52,7 @@ app.post(
       desc,
       date = new Date().toString(),
     } = req.body;
-
+    console.log("insert ok");
     let file_path = [];
     if (req.files) {
       for (let index in req.files) {

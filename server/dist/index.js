@@ -35,6 +35,7 @@ app.all("/data/getList", (req, res) => {
 //등록 기능
 app.post("/data/insert", upload.any(), (req, res) => {
     let { parent_idx = -1, name, desc, date = new Date().toString(), } = req.body;
+    console.log("insert ok");
     let file_path = [];
     if (req.files) {
         for (let index in req.files) {
