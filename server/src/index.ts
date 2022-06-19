@@ -25,37 +25,36 @@ app.use(
   })
 );
 
-//파일 저장관련
+//파일 저장관련 설정 입니다.
 const FILE_PATH: string = "uploads/";
 const upload: multer.Multer = multer({ dest: FILE_PATH });
 
-//기본 뷰 페이지
+//기본 뷰 페이지 입니다.
 app.all("/", (req: express.Request, res: express.Response) => {
   res.render("index.html", { title: "Welcome" });
 });
 
-//데이터 가져오기 기능
+//데이터 가져오기 기능 입니다.
 app.all("/data/getList", (req: express.Request, res: express.Response) => {
   select((error, result) => {
     res.send({ result: JSON.stringify(result) });
   });
 });
 
-//등록 기능
+//데이터 등록 기능 입니다.
+/**
+ * Multer 라이브러리를 사용하여 파일을 같이 받게 하였습니다.
+ */
 app.post(
   "/data/insert",
   upload.any(),
   (req: express.Request, res: express.Response) => {
-    let {
-      parent_idx = -1,
-      name,
-      desc,
-      date = new Date().toString(),
-    } = req.body;
-    console.log("insert ok");
+    let { name, desc, date = new Date().toString() } = req.body; //1) 파라미터를 받습니다.
     let file_path = [];
     if (req.files) {
+      //2) Multer 라이브러리를 통해 Request객체어 files 속성이 추가됩니다.
       for (let index in req.files) {
+        //3) 저장할 파일을 담습니다.
         let file = req.files[index];
         let { originalname: orgNm, filename, destination } = file;
         let tail = orgNm.substring(orgNm.lastIndexOf("."));
@@ -64,7 +63,8 @@ app.post(
     }
 
     insert(
-      { parent_idx, name, desc, date, file_path: JSON.stringify(file_path) },
+      //4) 데이터를 저장합니다.
+      { name, desc, date, file_path: JSON.stringify(file_path) },
       (result, error) => {
         if (error) {
           res.send({ result: "error" });
@@ -76,10 +76,10 @@ app.post(
   }
 );
 
-//수정 기능
+//데이터 수정 기능 입니다.
 app.all("/data/update", (req: express.Request, res: express.Response) => {
-  let { name, desc, date = new Date().toString() } = req.body;
-  update({ name, desc, date }, (result, error) => {
+  let { name, desc, date = new Date().toString(), idx } = req.body;
+  update({ name, desc, date, idx }, (result, error) => {
     if (error) {
       res.send({ result: "error" });
     } else {
@@ -88,11 +88,10 @@ app.all("/data/update", (req: express.Request, res: express.Response) => {
   });
 });
 
-//삭제 기능
+//데이터 삭제 기능 입니다.
 app.all("/data/remove", (req: express.Request, res: express.Response) => {
   let { idx } = req.body;
   remove(idx, (result, error) => {
-    console.log(result, error);
     if (error) {
       res.send({ result: "error" });
     } else {
@@ -101,7 +100,11 @@ app.all("/data/remove", (req: express.Request, res: express.Response) => {
   });
 });
 
-//파일 다운로드 기능
+//파일 다운로드 기능 입니다.
+/*
+ * 실제로 파일 이름이나 형식, 경로로 요청되는 주소 패턴은 웹 취약점 항목이므로 주의해야 합니다.
+ * 웹 표준 취약점 : 파일 다운로드(FD)
+ */
 app.all(
   "/data/download/:fileId/:tail",
   (req: express.Request, res: express.Response) => {

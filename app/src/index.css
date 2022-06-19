@@ -19,6 +19,30 @@ body {
   flex-direction: column;
 }
 
-.displayNone {
-  display: none;
+.text-danger{
+  color: red;
+}
+
+.remove{
+  cursor: pointer;
+  color: red;
+  margin-left: 2rem;
+}
+
+.clearfix{
+  margin-top: 1.5rem;
+}
+
+.downloader{
+  cursor: pointer;
+  color : rgb(50, 50, 207);
+}
+
+.dropList{
+  border: 1px solid rgb(170, 170, 170);
+  min-height: 4rem;  
+}
+
+.half{
+  width: 50%;
 }

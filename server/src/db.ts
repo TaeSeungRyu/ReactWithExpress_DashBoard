@@ -8,7 +8,6 @@ const db_path: string = "./my.db"; //db저장 위치 입니다.
 //데이터 저장 타입 입니다.
 type DBform = {
   idx?: number;
-  parent_idx?: number;
   name: string;
   desc?: string;
   date: string;
@@ -37,7 +36,7 @@ function init(calback?: Function): void {
     .then((arg) => {
       db = new sqlite3.Database(db_path);
       db.run(
-        `CREATE TABLE IF NOT EXISTS ${table_name}(idx INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, parent_idx INTEGER, date TEXT, file_path TEXT)`,
+        `CREATE TABLE IF NOT EXISTS ${table_name}(idx INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, date TEXT, file_path TEXT)`,
         (res: sqlite3.RunResult, err: Error) => {
           if (err) throw new Error("db create error!");
           if (calback) calback();
@@ -51,18 +50,15 @@ function init(calback?: Function): void {
 
 //#3. 가져오기 함수 입니다.
 function select(calback?: Function): void {
-  db.all(
-    `SELECT * FROM ${table_name} WHERE parent_idx = -1 `,
-    (result: any, error: Error) => {
-      if (calback && calback instanceof Function) calback(result, error);
-    }
-  );
+  db.all(`SELECT * FROM ${table_name} `, (result: any, error: Error) => {
+    if (calback && calback instanceof Function) calback(result, error);
+  });
 }
 
 //#4. 등록 함수 입니다.
 function insert(param: DBform, calback?: Function): void {
   db.run(
-    `INSERT INTO ${table_name}(parent_idx, name, desc, date, file_path ) VALUES('${param.parent_idx}','${param.name}','${param.desc}','${param.date}','${param.file_path}')`,
+    `INSERT INTO ${table_name}( name, desc, date, file_path ) VALUES('${param.name}','${param.desc}','${param.date}','${param.file_path}')`,
     (result: any, error: Error) => {
       if (calback && calback instanceof Function) calback(result, error);
     }

@@ -27,7 +27,7 @@ function init(calback) {
     _init()
         .then((arg) => {
         db = new sqlite3.Database(db_path);
-        db.run(`CREATE TABLE IF NOT EXISTS ${table_name}(idx INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, parent_idx INTEGER, date TEXT, file_path TEXT)`, (res, err) => {
+        db.run(`CREATE TABLE IF NOT EXISTS ${table_name}(idx INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, date TEXT, file_path TEXT)`, (res, err) => {
             if (err)
                 throw new Error("db create error!");
             if (calback)
@@ -40,7 +40,7 @@ function init(calback) {
 }
 //#3. 가져오기 함수 입니다.
 function select(calback) {
-    db.all(`SELECT * FROM ${table_name} WHERE parent_idx = -1 `, (result, error) => {
+    db.all(`SELECT * FROM ${table_name} `, (result, error) => {
         if (calback && calback instanceof Function)
             calback(result, error);
     });
@@ -48,7 +48,7 @@ function select(calback) {
 exports.select = select;
 //#4. 등록 함수 입니다.
 function insert(param, calback) {
-    db.run(`INSERT INTO ${table_name}(parent_idx, name, desc, date, file_path ) VALUES('${param.parent_idx}','${param.name}','${param.desc}','${param.date}','${param.file_path}')`, (result, error) => {
+    db.run(`INSERT INTO ${table_name}( name, desc, date, file_path ) VALUES('${param.name}','${param.desc}','${param.date}','${param.file_path}')`, (result, error) => {
         if (calback && calback instanceof Function)
             calback(result, error);
     });
